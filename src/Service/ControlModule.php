@@ -3,6 +3,7 @@
 namespace Service;
 
 use ValueObject\Building;
+use ValueObject\Command;
 use ValueObject\Elevator;
 /**
  * Created by PhpStorm.
@@ -12,36 +13,52 @@ use ValueObject\Elevator;
  */
 class ControlModule
 {
+    /**
+     * @var Command[]
+     */
     private $commands;
 
+    /**
+     * @var Building
+     */
     private $building;
 
+    /**
+     * @var Elevator
+     */
     private $elevator;
 
-    public function run($command)
+    public function __construct($elevator, $building)
     {
-        switch ($command->name){
-            case 'up':
-                $this->move();
-                break;
-            case 'down':
-                $this->move();
-                break;
-            case 'stop':
-                $this->stop();
-                break;
-            default:
-                break;
+        $this->elevator = $elevator;
+        $this->building = $building;
+    }
+
+    public function run()
+    {
+        $this->setActiveCommand();
+        $this->getElevator()->move($this->getActiveCommand());
+        $this->setActiveCommand();
+        $this->getElevator()->updateDirection($this->getActiveCommand());
+    }
+
+    public function setActiveCommand()
+    {
+        $activeCommand = $this->findNotDoneCommand();
+
+        if ($activeCommand !== null) {
+            $activeCommand->setIsActive(true);
+
+            foreach ($this->commands as $command) {
+                if ($activeCommand->getCreatedAtDate() > $command->getCreatedAtDate()
+                    && !$command->isDone()) {
+                    $activeCommand->setIsActive(false);
+                    $command->setIsActive(true);
+                    $activeCommand = $command;
+                }
+            }
         }
-    }
 
-    public function move()
-    {
-
-    }
-
-    public function stop()
-    {
 
     }
 
@@ -55,8 +72,100 @@ class ControlModule
 
     }
 
-    public function updateCommandList()
+    public function updateCommandList($commands)
     {
+        return $commands;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getCommands()
+    {
+        return $this->commands;
+    }
+
+    /**
+     * @param mixed $commands
+     */
+    public function setCommands($commands)
+    {
+        $this->commands = $commands;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBuilding()
+    {
+        return $this->building;
+    }
+
+    /**
+     * @param mixed $building
+     */
+    public function setBuilding($building)
+    {
+        $this->building = $building;
+    }
+
+    /**
+     * @return Elevator
+     */
+    public function getElevator()
+    {
+        return $this->elevator;
+    }
+
+    /**
+     * @param mixed $elevator
+     */
+    public function setElevator($elevator)
+    {
+        $this->elevator = $elevator;
+    }
+
+    /**
+     * @param Command $command
+     */
+    public function addCommand($command)
+    {
+        $this->commands[] = $command;
+    }
+
+
+    /**
+     * @return Command
+     */
+    public function getCommandToActivate()
+    {
+        $nextCommand = $this->findNotDoneCommand();
+        foreach ($this->commands as $command) {
+            if ($nextCommand->getCreatedAtDate() > $command->getCreatedAtDate() && !$command->isDone()) {
+                $nextCommand = $command;
+            }
+        }
+
+        return $nextCommand;
+    }
+
+    public function findNotDoneCommand()
+    {
+        foreach ($this->commands as $command) {
+            if (!$command->isDone()) {
+                return $command;
+            }
+        }
+
+        return null;
+    }
+
+    public function getActiveCommand()
+    {
+        foreach ($this->commands as $command){
+            if ($command->isActive() === true && $command->isDone() === false){
+                return $command;
+            }
+        }
     }
 }
