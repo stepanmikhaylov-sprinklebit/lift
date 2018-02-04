@@ -33,7 +33,7 @@ class Elevator
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getMaxSpeed()
     {
@@ -41,7 +41,7 @@ class Elevator
     }
 
     /**
-     * @param int $maxSpeed
+     * @param float $maxSpeed
      */
     public function setMaxSpeed($maxSpeed)
     {
@@ -49,17 +49,17 @@ class Elevator
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getCurrentSpeed(): int
+    public function getCurrentSpeed(): float
     {
         return $this->currentSpeed;
     }
 
     /**
-     * @param int $currentSpeed
+     * @param float $currentSpeed
      */
-    public function setCurrentSpeed(int $currentSpeed)
+    public function setCurrentSpeed(float $currentSpeed)
     {
         $this->currentSpeed = $currentSpeed;
     }

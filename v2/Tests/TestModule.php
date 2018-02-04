@@ -26,7 +26,7 @@ class TestModule extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $elevator = new Elevator(1);
+        $elevator = new Elevator(0.25);
         $building = new Building(4, 4);
         $this->module = new Module($elevator, $building);
     }
@@ -424,8 +424,8 @@ class TestModule extends TestCase
         $this->module->addCommand($command3);
         $this->module->addCommand($command4);
 
-        $this->assertEquals('up', $this->module->getElevator()->getDirection());
-        $this->assertEquals(1, $this->module->getElevator()->getCurrentSpeed());
+        $this->assertEquals('none', $this->module->getElevator()->getDirection());
+        $this->assertEquals(0, $this->module->getElevator()->getCurrentSpeed());
     }
 
     public function testMovingUp()

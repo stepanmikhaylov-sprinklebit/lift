@@ -15,6 +15,8 @@ use \v2\Entity\Route;
 
 class Module
 {
+    const FILE_COMMANDS = '/home/stepan/Documents/LiftControl/docs/Commands';
+
     /**
      * @var Elevator
      */
@@ -211,7 +213,7 @@ class Module
     {
         $route = $this->getCurrentRoute();
 
-        if ($route === null) {
+        if ($route === null || $this->elevator->getDirection() === 'stop') {
             return;
         }
 
@@ -240,7 +242,8 @@ class Module
             $this->elevator->setDirection(Elevator::DIRECTION_NONE);
             $this->endMoving();
         }
-        return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level' . PHP_EOL;
+
+//        return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level' . PHP_EOL;
     }
 
     public function status($time)
@@ -266,7 +269,7 @@ class Module
                 $this->elevator->setCurrentLevel(ceil($position));
                 break;
             case 'stop' :
-                break;
+                return;
             default:
                 break;
         }
@@ -308,11 +311,15 @@ class Module
     public function stop()
     {
         if ($this->elevator->getDirection() === 'stop') {
-            $this->startMoving();
+            $this->elevator->setDirection('none');
+            echo 'Lift continue moving' . PHP_EOL;
+
             return;
         }
         $this->elevator->setDirection('stop');
         $this->elevator->setCurrentSpeed(0);
+
+        echo 'Lift stopped' . PHP_EOL;
     }
 
     public function endMoving()
@@ -347,6 +354,37 @@ class Module
         while (microtime(true) - $startTime < $time) {
             $this->startMoving();
             $this->status(microtime(true));
+            $this->updateCommands();
         }
+    }
+
+    public function updateCommands()
+    {
+        $file = fopen(Module::FILE_COMMANDS, 'r+');
+        flock($file, LOCK_EX);
+
+        $commandsSerialize = fread($file, 10000);
+        $commands = explode(PHP_EOL, $commandsSerialize);
+        array_pop($commands);
+
+        foreach ($commands as $command) {
+            $this->addCommand(unserialize($command, [Command::class]));
+        }
+        ftruncate($file, 0);
+        flock($file, LOCK_UN);
+
+        fclose($file);
+    }
+
+    /**
+     * @param Command $command
+     */
+    public function addCommandToFile($command)
+    {
+        $file = fopen(Module::FILE_COMMANDS, 'a');
+        flock($file, LOCK_EX);
+        fwrite($file, serialize($command) . PHP_EOL);
+        flock($file, LOCK_UN);
+        fclose($file);
     }
 }
