@@ -15,6 +15,8 @@ class Elevator
 
     const DIRECTION_DOWN = 'down';
 
+    const DIRECTION_STOP = 'stop';
+
     private $maxSpeed;
 
     private $currentSpeed = 0;

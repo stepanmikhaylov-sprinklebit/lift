@@ -11,6 +11,12 @@ namespace v2\Entity;
 
 class Command
 {
+    const BUTTON_DIRECTION = 1;
+
+    const BUTTON_STOP = 0;
+
+    const BUTTON_NUMBER = 10;
+
     private $createdAtDate;
 
     private $createdAtPosition;
@@ -21,14 +27,17 @@ class Command
 
     private $isDone = false;
 
-    private $name;
+    private $value;
 
-    public function __construct(int $createdAtPosition, int $destinationLevel, string $name)
+    private $type;
+
+    public function __construct(int $createdAtPosition, int $destinationLevel, string $value, int $type)
     {
         $this->createdAtDate = microtime(true);
         $this->createdAtPosition = $createdAtPosition;
         $this->destinationLevel = $destinationLevel;
-        $this->name = $name;
+        $this->value = $value;
+        $this->type = $type;
     }
 
     /**
@@ -114,16 +123,32 @@ class Command
     /**
      * @return string
      */
-    public function getName(): string
+    public function getValue(): string
     {
-        return $this->name;
+        return $this->value;
     }
 
     /**
-     * @param string $name
+     * @param string $value
      */
-    public function setName(string $name)
+    public function setValue(string $value)
     {
-        $this->name = $name;
+        $this->value = $value;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     */
+    public function setType(int $type)
+    {
+        $this->type = $type;
     }
 }

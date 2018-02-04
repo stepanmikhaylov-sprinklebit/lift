@@ -94,13 +94,36 @@ class Module
      */
     public function addCommand($command)
     {
-        $this->commands[] = $command;
-        $this->updateRoute($command);
+        if ($this->commands === null) {
+            $this->commands[] = $command;
+            $this->updateRoute($command);
+        } else {
+            if ($command->getType() === Command::BUTTON_STOP) {
+                $this->stop();
+                return;
+            } else if ($this->isDuplicate($command)) {
+                return;
+            }
+            $this->commands[] = $command;
+            $this->updateRoute($command);
+        }
     }
 
-    public function removeCommand($command)
+    public function removeCommands($direction, $level)
     {
-
+        $commands = $this->getCommands();
+        foreach ($this->commands as $key => $value)
+        {
+            if ($commands[$key]->getType() === 1) {
+                if ($commands[$key]->getValue() === $direction && $commands[$key]->getDestinationLevel() == $level) {
+                    unset($this->commands[$key]);
+                }
+            } else {
+                if ( $commands[$key]->getDestinationLevel() == $level ) {
+                    unset($this->commands[$key]);
+                }
+            }
+        }
     }
 
     /**
@@ -121,25 +144,209 @@ class Module
 
     public function updateRoute(Command $command)
     {
-        $this->routes[] = new Route($command);
+        $route = new Route($command);
+        if ($this->routes === null) {
+            $this->routes[] = $route;
+        } else {
+            $routesCount = count($this->routes);
+            $elevator = clone $this->elevator;
+            for ($i = 0; $i < $routesCount; $i++) {
+                switch ($command->getType()) {
+                    case Command::BUTTON_DIRECTION:
+                        $delta = $this->routes[$i]->getEndLevel() - $elevator->getCurrentLevel();
+                        if ($delta > 0) {
+                            $elevator->setDirection('up');
+                        } else if ($delta < 0) {
+                            $elevator->setDirection('down');
+                        }
+
+                        if (
+                            $elevator->getDirection() === $command->getValue()
+                            && $this->routes[$i]->getEndLevel() * $delta > $route->getEndLevel() * $delta
+                            && $elevator->getCurrentLevel() * $delta <= $route->getEndLevel() * $delta
+                        ) {
+                            array_splice($this->routes, $i, 0, [$route]);
+                            return;
+                        } else if ($elevator->getDirection() !== $command->getValue()
+                            && $route->getEndLevel() === $this->routes[$i]->getEndLevel()) {
+                            if (!isset($this->routes[$i+1])) {
+                                return;
+                            } else {
+                                if ($this->routes[$i+1]->getEndLevel() * $delta < $route->getEndLevel() * $delta){
+                                    return;
+                                }
+                            }
+                        }
+                        $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
+
+                        break;
+                    case Command::BUTTON_NUMBER:
+                        $delta = $this->routes[$i]->getEndLevel() - $elevator->getCurrentLevel();
+                        if ($this->routes[$i]->getEndLevel() * $delta > $route->getEndLevel() * $delta
+                            && $elevator->getCurrentLevel() * $delta <= $route->getEndLevel() * $delta
+                        ) {
+                            array_splice($this->routes, $i, 0, [$route]);
+                            return;
+                        } else if ($this->routes[$i]->getEndLevel() === $route->getEndLevel()) {
+                            return;
+                        }
+                        $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
+
+                        break;
+                }
+
+            }
+
+            $this->routes[] = $route;
+        }
+
     }
 
     public function getCurrentRoute()
     {
-        return $this->routes[0];
+        return isset($this->routes[0]) ? $this->routes[0] : null;
     }
 
-    public function move()
+    public function startMoving()
     {
         $route = $this->getCurrentRoute();
-        if (true) {
 
+        if ($route === null) {
+            return;
+        }
+
+        if ($route->getEndLevel() > $this->elevator->getCurrentLevel()) {
+            if ($this->elevator->getDirection() === 'none') {
+                $this->getCurrentRoute()->setStartTime(microtime(true));
+                echo 'Lift on ' . $this->elevator->getCurrentLevel()
+                    . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level' . PHP_EOL;
+            }
+
+            $this->elevator->setDirection(Elevator::DIRECTION_UP);
+            $this->elevator->setCurrentSpeed($this->elevator->getMaxSpeed());
+            //$this->getCurrentRoute()->setStartTime(microtime(true));
+
+        } else if ($route->getEndLevel() < $this->elevator->getCurrentLevel()) {
+            if ($this->elevator->getDirection() === 'none') {
+                $this->getCurrentRoute()->setStartTime(microtime(true));
+                echo 'Lift on ' . $this->elevator->getCurrentLevel()
+                    . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level' . PHP_EOL;
+            }
+
+            $this->elevator->setDirection(Elevator::DIRECTION_DOWN);
+            $this->elevator->setCurrentSpeed(-$this->elevator->getMaxSpeed());
+//            $this->getCurrentRoute()->setStartTime(microtime(true));
+        } else {
+            $this->elevator->setDirection(Elevator::DIRECTION_NONE);
+            $this->endMoving();
+        }
+        return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level' . PHP_EOL;
+    }
+
+    public function status($time)
+    {
+        $route = $this->getCurrentRoute();
+
+        $direction = $this->elevator->getDirection();
+        $speed = $this->elevator->getCurrentSpeed();
+
+        switch ($direction) {
+            case 'none' :
+                return;
+            case 'up' :
+                $position = $this->elevator->getPosition() + $speed * ($time - $this->getCurrentRoute()->getStartTime());
+                $this->getCurrentRoute()->setStartTime($time);
+                $this->elevator->setPosition($position);
+                $this->elevator->setCurrentLevel(floor($position));
+                break;
+            case 'down' :
+                $position = $this->elevator->getPosition() + $speed * ($time - $this->getCurrentRoute()->getStartTime());
+                $this->getCurrentRoute()->setStartTime($time);
+                $this->elevator->setPosition($position);
+                $this->elevator->setCurrentLevel(ceil($position));
+                break;
+            case 'stop' :
+                break;
+            default:
+                break;
+        }
+        if ($speed * $route->getEndLevel() <= $speed * $this->elevator->getPosition())
+        {
+            $this->endMoving();
+            return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level';
         }
         return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level';
     }
 
-    public function status()
+    /**
+     * @param Command $command
+     * @return bool
+     */
+    public function isDuplicate($command)
     {
-        return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level';
+        switch ($command->getType()) {
+            case Command::BUTTON_DIRECTION:
+                foreach ($this->commands as $item) {
+                    if ($item->getValue() === $command->getValue()
+                        && $item->getDestinationLevel() === $command->getDestinationLevel()) {
+                        return true;
+                    }
+                }
+                break;
+            case Command::BUTTON_NUMBER:
+                foreach ($this->commands as $item) {
+                    if ($item->getDestinationLevel() === $command->getDestinationLevel()
+                        && $item->getType() === Command::BUTTON_NUMBER) {
+                        return true;
+                    }
+                }
+                break;
+        }
+        return false;
+    }
+
+    public function stop()
+    {
+        if ($this->elevator->getDirection() === 'stop') {
+            $this->startMoving();
+            return;
+        }
+        $this->elevator->setDirection('stop');
+        $this->elevator->setCurrentSpeed(0);
+    }
+
+    public function endMoving()
+    {
+        $this->removeRoute();
+        $this->removeCommands($this->elevator->getDirection(), $this->elevator->getCurrentLevel());
+        $this->elevator->setDirection(Elevator::DIRECTION_NONE);
+        $this->elevator->setCurrentSpeed(0);
+        echo 'Lift on ' . $this->elevator->getCurrentLevel() . ' level' . PHP_EOL ;
+        $this->openDoors();
+    }
+
+    public function removeRoute()
+    {
+        array_splice($this->routes, 0, 1);
+    }
+
+    public function calculateMovingTime()
+    {
+
+    }
+
+    public function openDoors()
+    {
+        echo "The doors are opening" . PHP_EOL;
+        echo "The doors are closing" . PHP_EOL;
+    }
+
+    public function run($time)
+    {
+        $startTime = microtime(true);
+        while (microtime(true) - $startTime < $time) {
+            $this->startMoving();
+            $this->status(microtime(true));
+        }
     }
 }
