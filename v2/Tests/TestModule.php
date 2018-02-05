@@ -26,8 +26,8 @@ class TestModule extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $elevator = new Elevator(0.25);
-        $building = new Building(4, 4);
+        $elevator = new Elevator(1);
+        $building = new Building(4, 1);
         $this->module = new Module($elevator, $building);
     }
 

@@ -13,7 +13,7 @@ use v2\Entity\Command;
 use v2\Entity\Elevator;
 use v2\Service\Module;
 
-$elevator = new Elevator(0.25);
+$elevator = new Elevator(1);
 $building = new Building(4, 4);
 $module = new Module($elevator, $building);
 

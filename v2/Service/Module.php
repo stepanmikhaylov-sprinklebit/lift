@@ -25,7 +25,7 @@ class Module
     /**
      * @var Building
      */
-    private $biulding;
+    private $building;
 
     /**
      * @var Command[]
@@ -40,7 +40,7 @@ class Module
     public function __construct(Elevator $elevator, Building $building)
     {
         $this->elevator = $elevator;
-        $this->biulding = $building;
+        $this->building = $building;
     }
 
     /**
@@ -62,17 +62,17 @@ class Module
     /**
      * @return Building
      */
-    public function getBiulding(): Building
+    public function getBuilding(): Building
     {
-        return $this->biulding;
+        return $this->building;
     }
 
     /**
-     * @param Building $biulding
+     * @param Building $building
      */
-    public function setBiulding(Building $biulding)
+    public function setBuilding(Building $building)
     {
-        $this->biulding = $biulding;
+        $this->building = $building;
     }
 
     /**
@@ -257,13 +257,13 @@ class Module
             case 'none' :
                 return;
             case 'up' :
-                $position = $this->elevator->getPosition() + $speed * ($time - $this->getCurrentRoute()->getStartTime());
+                $position = $this->elevator->getPosition() + $speed * ($time - $this->getCurrentRoute()->getStartTime()) / $this->building->getLevelHigh();
                 $this->getCurrentRoute()->setStartTime($time);
                 $this->elevator->setPosition($position);
                 $this->elevator->setCurrentLevel(floor($position));
                 break;
             case 'down' :
-                $position = $this->elevator->getPosition() + $speed * ($time - $this->getCurrentRoute()->getStartTime());
+                $position = $this->elevator->getPosition() + $speed * ($time - $this->getCurrentRoute()->getStartTime()) / $this->building->getLevelHigh();
                 $this->getCurrentRoute()->setStartTime($time);
                 $this->elevator->setPosition($position);
                 $this->elevator->setCurrentLevel(ceil($position));
