@@ -32,15 +32,15 @@ class TestIntegration extends  TestCase
 
     public function testRun1()
     {
-        $command1 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(4, 1, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(2, 1, '1', Command::BUTTON_NUMBER);
-        $command6 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command7 = new Command(4, 3, '3', Command::BUTTON_NUMBER);
-        $command8 = new Command(4, 2, '2', Command::BUTTON_NUMBER);
-        $command9 = new Command(4, 2, 'down', Command::BUTTON_DIRECTION);
+        $command1 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command6 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command7 = new Command(3, '3', Command::BUTTON_NUMBER);
+        $command8 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command9 = new Command(2, 'down', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -57,14 +57,14 @@ class TestIntegration extends  TestCase
 
     public function testRun2()
     {
-        $command1 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(4, 1, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(2, 1, '1', Command::BUTTON_NUMBER);
-        $command6 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command7 = new Command(3, 3, 'stop', Command::BUTTON_STOP);
-        $command8 = new Command(4, 4, 'stop', Command::BUTTON_STOP);
+        $command1 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command6 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command7 = new Command(3, 'stop', Command::BUTTON_STOP);
+        $command8 = new Command(4, 'stop', Command::BUTTON_STOP);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -90,14 +90,14 @@ class TestIntegration extends  TestCase
 
     public function testRun3()
     {
-        $command1 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(4, 1, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(2, 1, '1', Command::BUTTON_NUMBER);
-        $command6 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command7 = new Command(3, 3, 'stop', Command::BUTTON_STOP);
-        $command8 = new Command(4, 4, 'stop', Command::BUTTON_STOP);
+        $command1 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command6 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command7 = new Command(3, 'stop', Command::BUTTON_STOP);
+        $command8 = new Command(4, 'stop', Command::BUTTON_STOP);
 
 //        $this->module->addCommandToFile($command4);
 //        $this->module->addCommandToFile($command5);

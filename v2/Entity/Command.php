@@ -19,8 +19,6 @@ class Command
 
     private $createdAtDate;
 
-    private $createdAtPosition;
-
     private $destinationLevel;
 
     private $inProgress = false;
@@ -31,10 +29,9 @@ class Command
 
     private $type;
 
-    public function __construct(int $createdAtPosition, int $destinationLevel, string $value, int $type)
+    public function __construct(int $destinationLevel, string $value, int $type)
     {
         $this->createdAtDate = microtime(true);
-        $this->createdAtPosition = $createdAtPosition;
         $this->destinationLevel = $destinationLevel;
         $this->value = $value;
         $this->type = $type;
@@ -54,22 +51,6 @@ class Command
     public function setCreatedAtDate($createdAtDate)
     {
         $this->createdAtDate = $createdAtDate;
-    }
-
-    /**
-     * @return float
-     */
-    public function getCreatedAtPosition()
-    {
-        return $this->createdAtPosition;
-    }
-
-    /**
-     * @param float $createdAtPosition
-     */
-    public function setCreatedAtPosition($createdAtPosition)
-    {
-        $this->createdAtPosition = $createdAtPosition;
     }
 
     /**

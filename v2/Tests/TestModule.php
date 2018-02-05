@@ -8,7 +8,6 @@
 
 namespace TestV2;
 
-
 use PHPUnit\Framework\TestCase;
 use v2\Entity\Building;
 use v2\Entity\Command;
@@ -33,8 +32,8 @@ class TestModule extends TestCase
 
     public function testAddCommand()
     {
-        $command1 = new Command(1, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 3, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -46,17 +45,17 @@ class TestModule extends TestCase
 
     public function testAddDuplicateCommand()
     {
-        $command1 = new Command(4, 3, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 3, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(1, 3, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(3, 2, 'up', Command::BUTTON_DIRECTION);
-        $command6 = new Command(3, 1, 'down', Command::BUTTON_DIRECTION);
-        $command7 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command8 = new Command(2, 4, '4', Command::BUTTON_NUMBER);
-        $command9 = new Command(2, 2, '2', Command::BUTTON_NUMBER);
-        $command10 = new Command(1, 1, '1', Command::BUTTON_NUMBER);
-        $command11 = new Command(1, 3, '3', Command::BUTTON_NUMBER);
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command6 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command7 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command8 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command9 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command10 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command11 = new Command(3, '3', Command::BUTTON_NUMBER);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -85,17 +84,17 @@ class TestModule extends TestCase
 
     public function testAddDuplicateRoute()
     {
-        $command1 = new Command(4, 3, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 3, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(1, 3, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(3, 2, 'up', Command::BUTTON_DIRECTION);
-        $command6 = new Command(3, 1, 'down', Command::BUTTON_DIRECTION);
-        $command7 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command8 = new Command(2, 4, '4', Command::BUTTON_NUMBER);
-        $command9 = new Command(2, 2, '2', Command::BUTTON_NUMBER);
-        $command10 = new Command(1, 1, '1', Command::BUTTON_NUMBER);
-        $command11 = new Command(1, 3, '3', Command::BUTTON_NUMBER);
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command6 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command7 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command8 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command9 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command10 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command11 = new Command(3, '3', Command::BUTTON_NUMBER);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -122,18 +121,18 @@ class TestModule extends TestCase
     //ToDo: continue
     public function testAddDuplicateRoute2()
     {
-        $command1 = new Command(4, 3, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 3, 'up', Command::BUTTON_DIRECTION);
-        $command12 = new Command(1, 4, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(1, 3, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(3, 2, 'up', Command::BUTTON_DIRECTION);
-        $command6 = new Command(3, 1, 'down', Command::BUTTON_DIRECTION);
-        $command7 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command8 = new Command(2, 4, '4', Command::BUTTON_NUMBER);
-        $command9 = new Command(2, 2, '2', Command::BUTTON_NUMBER);
-        $command10 = new Command(1, 1, '1', Command::BUTTON_NUMBER);
-        $command11 = new Command(1, 3, '3', Command::BUTTON_NUMBER);
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command12 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command6 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command7 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command8 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command9 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command10 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command11 = new Command(3, '3', Command::BUTTON_NUMBER);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -162,8 +161,8 @@ class TestModule extends TestCase
 
     public function testAddRoutes()
     {
-        $command1 = new Command(1, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(3, 3, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -175,8 +174,8 @@ class TestModule extends TestCase
 
     public function AddRoutesUp()
     {
-        $command1 = new Command(1, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(2, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
 
@@ -212,9 +211,9 @@ class TestModule extends TestCase
 
     public function testListRoutesOnlyUp()
     {
-        $command1 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(3, 3, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(2, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -225,12 +224,12 @@ class TestModule extends TestCase
 
     public function testListRoutesUpDown1()
     {
-        $command1 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(3, 3, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(1, 1, 'up', Command::BUTTON_DIRECTION);
-        $command4 = new Command(2, 2, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(3, 3, 'down', Command::BUTTON_DIRECTION);
-        $command6 = new Command(1, 1, 'down', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(1, 'up', Command::BUTTON_DIRECTION);
+        $command4 = new Command(2, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command6 = new Command(1, 'down', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -252,10 +251,10 @@ class TestModule extends TestCase
 
     public function testRoutesUpDown2()
     {
-        $command1 = new Command(3, 3, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 2, 'down', Command::BUTTON_DIRECTION);
-        $command3 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command4 = new Command(1, 1, 'down', Command::BUTTON_DIRECTION);
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(2, 'down', Command::BUTTON_DIRECTION);
+        $command3 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command4 = new Command(1, 'down', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -273,12 +272,12 @@ class TestModule extends TestCase
 
     public function testRoutesUpDown3()
     {
-        $command1 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(1, 1, 'down', Command::BUTTON_DIRECTION);
-        $command3 = new Command(3, 3, 'up', Command::BUTTON_DIRECTION);
-        $command4 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
-        $command5 = new Command(3, 3, 'down', Command::BUTTON_DIRECTION);
-        $command6 = new Command(2, 2, 'down', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command4 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command5 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command6 = new Command(2, 'down', Command::BUTTON_DIRECTION);
 
 
         $this->module->addCommand($command1);
@@ -301,9 +300,9 @@ class TestModule extends TestCase
 
     public function testRoutesWithNumbersDown()
     {
-        $command1 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(1, 3, '3', Command::BUTTON_NUMBER);
-        $command3 = new Command(1, 2, '2', Command::BUTTON_NUMBER);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, '3', Command::BUTTON_NUMBER);
+        $command3 = new Command(2, '2', Command::BUTTON_NUMBER);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -319,12 +318,12 @@ class TestModule extends TestCase
 
     public function testRoutesWithNumbersUpDown()
     {
-        $command1 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 2, '2', Command::BUTTON_NUMBER);
-        $command3 = new Command(2, 2, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(1, 1, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(3, 3, '3', Command::BUTTON_NUMBER);
-        $command6 = new Command(3, 3, 'down', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command3 = new Command(2, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(3, '3', Command::BUTTON_NUMBER);
+        $command6 = new Command(3, 'down', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -346,7 +345,7 @@ class TestModule extends TestCase
 
     public function MoveOnce()
     {
-        $command1 = new Command(1, 4, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(4, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
 
@@ -367,8 +366,8 @@ class TestModule extends TestCase
 
     public function MoveTwiceUp()
     {
-        $command1 = new Command(1, 2, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 4, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(4, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -400,9 +399,9 @@ class TestModule extends TestCase
 
     public function testStopButtonRoute()
     {
-        $command1 = new Command(4, 3, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 3, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 2, 'stop', Command::BUTTON_STOP);
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(2, 'stop', Command::BUTTON_STOP);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -414,10 +413,10 @@ class TestModule extends TestCase
 
     public function testStopButtonTwice()
     {
-        $command1 = new Command(4, 3, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(2, 3, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 2, 'stop', Command::BUTTON_STOP);
-        $command4 = new Command(2, 2, 'stop', Command::BUTTON_STOP);
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(2, 'stop', Command::BUTTON_STOP);
+        $command4 = new Command(2, 'stop', Command::BUTTON_STOP);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -430,8 +429,8 @@ class TestModule extends TestCase
 
     public function testMovingUp()
     {
-        $command1 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
+        $command1 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(4, 'up', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
@@ -470,15 +469,15 @@ class TestModule extends TestCase
 
     public function testMovingUpDownNumbers()
     {
-        $command1 = new Command(2, 2, 'up', Command::BUTTON_DIRECTION);
-        $command2 = new Command(4, 4, 'up', Command::BUTTON_DIRECTION);
-        $command3 = new Command(2, 3, 'down', Command::BUTTON_DIRECTION);
-        $command4 = new Command(4, 1, 'down', Command::BUTTON_DIRECTION);
-        $command5 = new Command(2, 1, '1', Command::BUTTON_NUMBER);
-        $command6 = new Command(4, 4, '4', Command::BUTTON_NUMBER);
-        $command7 = new Command(4, 3, '3', Command::BUTTON_NUMBER);
-        $command8 = new Command(4, 2, '2', Command::BUTTON_NUMBER);
-        $command9 = new Command(4, 2, 'down', Command::BUTTON_DIRECTION);
+        $command1 = new Command(2, 'up', Command::BUTTON_DIRECTION);
+        $command2 = new Command(4, 'up', Command::BUTTON_DIRECTION);
+        $command3 = new Command(3, 'down', Command::BUTTON_DIRECTION);
+        $command4 = new Command(1, 'down', Command::BUTTON_DIRECTION);
+        $command5 = new Command(1, '1', Command::BUTTON_NUMBER);
+        $command6 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command7 = new Command(3, '3', Command::BUTTON_NUMBER);
+        $command8 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command9 = new Command(2, 'down', Command::BUTTON_DIRECTION);
 
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);

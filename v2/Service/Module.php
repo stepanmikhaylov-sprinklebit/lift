@@ -96,7 +96,7 @@ class Module
      */
     public function addCommand($command)
     {
-        if ($this->commands === null) {
+        if ($this->commands === null && $command->getType() !== Command::BUTTON_STOP) {
             $this->commands[] = $command;
             $this->updateRoute($command);
         } else {
@@ -173,10 +173,6 @@ class Module
                             && $route->getEndLevel() === $this->routes[$i]->getEndLevel()) {
                             if (!isset($this->routes[$i+1])) {
                                 return;
-                            } else {
-                                if ($this->routes[$i+1]->getEndLevel() * $delta < $route->getEndLevel() * $delta){
-                                    return;
-                                }
                             }
                         }
                         $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
