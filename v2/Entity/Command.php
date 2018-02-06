@@ -17,6 +17,8 @@ class Command
 
     const BUTTON_NUMBER = 10;
 
+    const BUTTON_CALL = 2;
+
     private $createdAtDate;
 
     private $destinationLevel;

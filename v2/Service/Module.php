@@ -94,7 +94,7 @@ class Module
     /**
      * @param Command $command
      */
-    public function addCommand($command)
+    public function addCommand($command) : void
     {
         if ($this->commands === null && $command->getType() !== Command::BUTTON_STOP) {
             $this->commands[] = $command;
@@ -111,7 +111,7 @@ class Module
         }
     }
 
-    public function removeCommands($direction, $level)
+    public function removeCommands(string $direction, int $level) : void
     {
         $commands = $this->getCommands();
         foreach ($this->commands as $key => $value)
@@ -139,12 +139,12 @@ class Module
     /**
      * @param Route[] $routes
      */
-    public function setRoute(array $routes)
+    public function setRoute(array $routes) : void
     {
         $this->routes = $routes;
     }
 
-    public function updateRoute(Command $command)
+    public function updateRoute(Command $command) : void
     {
         $route = new Route($command);
         if ($this->routes === null) {
@@ -191,18 +191,30 @@ class Module
                         $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
 
                         break;
+                    case Command::BUTTON_CALL:
+                        $delta = $this->routes[$i]->getEndLevel() - $elevator->getCurrentLevel();
+                        if ($this->routes[$i]->getEndLevel() * $delta > $route->getEndLevel() * $delta
+                            && $elevator->getCurrentLevel() * $delta <= $route->getEndLevel() * $delta
+                        ) {
+                            array_splice($this->routes, $i, 0, [$route]);
+                            return;
+                        } else if ($this->routes[$i]->getEndLevel() === $route->getEndLevel()) {
+                            return;
+                        }
+                        $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
+
+                        break;
                 }
 
             }
 
             $this->routes[] = $route;
         }
-
     }
 
-    public function getCurrentRoute()
+    public function getCurrentRoute() : ?Route
     {
-        return isset($this->routes[0]) ? $this->routes[0] : null;
+        return $this->routes[0] ?? null;
     }
 
     public function startMoving()
@@ -233,13 +245,11 @@ class Module
 
             $this->elevator->setDirection(Elevator::DIRECTION_DOWN);
             $this->elevator->setCurrentSpeed(-$this->elevator->getMaxSpeed());
-//            $this->getCurrentRoute()->setStartTime(microtime(true));
         } else {
             $this->elevator->setDirection(Elevator::DIRECTION_NONE);
             $this->endMoving();
         }
 
-//        return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level' . PHP_EOL;
     }
 
     public function status($time)
@@ -274,7 +284,6 @@ class Module
             $this->endMoving();
             return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level';
         }
-        return 'Lift on ' . $this->elevator->getCurrentLevel() . ' level. Moves to ' . $this->getCurrentRoute()->getEndLevel() . ' level';
     }
 
     /**
@@ -300,6 +309,15 @@ class Module
                     }
                 }
                 break;
+            case Command::BUTTON_CALL:
+                foreach ($this->commands as $item) {
+                    if ($item->getDestinationLevel() === $command->getDestinationLevel()
+                        && $item->getType() === Command::BUTTON_CALL) {
+                        return true;
+                    }
+                }
+                break;
+
         }
         return false;
     }
