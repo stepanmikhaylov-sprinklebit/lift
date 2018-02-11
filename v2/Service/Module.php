@@ -111,29 +111,45 @@ class Module
             $elevator = $this->getClosestElevator($command);
 
             if ($this->commands === null) {
-                $this->commands[] = $command;
+//                $this->commands[] = $command;
+                $elevator->updateRoute($command);
+            } else {
+//                if ($this->isDuplicate($command)) {
+//                    return;
+//                }
+//                $this->commands[] = $command;
+                $elevator->updateRoute($command);
+            }
+        }
+        else if ($command->getType() === Command::BUTTON_CALL) {
+            $elevator = $this->getClosestElevator($command);
+
+            if ($this->commands === null) {
+//                $this->commands[] = $command;
                 $elevator->updateRoute($command);
             } else {
                 if ($this->isDuplicate($command)) {
                     return;
                 }
-                $this->commands[] = $command;
+//                $this->commands[] = $command;
                 $elevator->updateRoute($command);
             }
-        } else {
+        }
+        else {
             $elevator = $command->getElevator();
 
             if ($this->commands === null && $command->getType() !== Command::BUTTON_STOP) {
-                $this->commands[] = $command;
+//                $this->commands[] = $command;
                 $elevator->updateRoute($command);
             } else {
                 if ($command->getType() === Command::BUTTON_STOP) {
                     $elevator->stop();
                     return;
-                } else if ($this->isDuplicate($command)) {
-                    return;
                 }
-                $this->commands[] = $command;
+//                else if ($this->isDuplicate($command)) {
+//                    return;
+//                }
+//                $this->commands[] = $command;
                 $elevator->updateRoute($command);
             }
         }
@@ -251,6 +267,15 @@ class Module
      */
     private function getClosestElevator($command)
     {
-        return $this->elevators[0];
+        $closestElevator = $this->elevators[0];
+
+        foreach ($this->elevators as $elevator)
+        {
+            if ($elevator->calculateDistance($command) < $closestElevator->calculateDistance($command)) {
+                $closestElevator = $elevator;
+            }
+        }
+
+        return $closestElevator;
     }
 }

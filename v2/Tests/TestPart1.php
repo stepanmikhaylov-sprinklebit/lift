@@ -33,33 +33,6 @@ class TestPart1 extends TestCase
         $this->module->addElevator($elevator);
     }
 
-    public function dataAddCommand()
-    {
-        return [
-            'button direction' => [new Command(4, 'up', Command::BUTTON_DIRECTION), true],
-            'button number' => [new Command(2, '2', Command::BUTTON_NUMBER), true],
-            'button stop' => [new Command(1, 'stop', Command::BUTTON_STOP), false],
-            'button call' => [new Command(2, 'call', Command::BUTTON_CALL), true],
-        ];
-    }
-
-    /**
-     * @dataProvider dataAddCommand
-     * @param Command $command
-     * @param bool $expected
-     */
-    public function testAddCommand($command, $expected)
-    {
-        $command->setElevator($this->module->getElevators()[0]);
-
-        $this->module->addCommand($command);
-        if ($this->module->getCommands() !== null) {
-            $this->assertEquals($expected, in_array($command, $this->module->getCommands()));
-        } else {
-            $this->assertFalse($expected);
-        }
-    }
-
     public function dataDuplicateCommands()
     {
         return [
@@ -129,23 +102,6 @@ class TestPart1 extends TestCase
                 2
             ],
         ];
-    }
-
-    /**
-     * @dataProvider dataDuplicateCommands
-     * @param Command $command1
-     * @param Command $command2
-     * @param int $expectedCount
-     */
-    public function testAddDuplicateCommand($command1, $command2, $expectedCount)
-    {
-        $command1->setElevator($this->module->getElevators()[0]);
-        $command2->setElevator($this->module->getElevators()[0]);
-
-        $this->module->addCommand($command1);
-        $this->module->addCommand($command2);
-
-        $this->assertCount($expectedCount, $this->module->getCommands());
     }
 
     public function dataRoutes()
@@ -656,10 +612,19 @@ class TestPart1 extends TestCase
     {
         $command = new Command(3, '3', Command::BUTTON_NUMBER);
         $command->setElevator($this->module->getElevators()[0]);
-        $this->module->addElevator(new Elevator(1));
+        $elevator = new Elevator(1);
+        $this->module->addElevator($elevator);
         $this->module->addCommand($command);
 
         $this->assertEquals([new Route($command)], $this->module->getElevators()[0]->getRoutes());
         $this->assertEquals([], $this->module->getElevators()[1]->getRoutes());
+
+        $command1 = new Command(3, 'up', Command::BUTTON_DIRECTION);
+
+        $elevator->setCurrentLevel(4);
+        $this->module->addCommand($command1);
+
+        $this->assertEquals([new Route($command)], $this->module->getElevators()[0]->getRoutes());
+        $this->assertEquals([new Route($command1)], $this->module->getElevators()[1]->getRoutes());
     }
 }

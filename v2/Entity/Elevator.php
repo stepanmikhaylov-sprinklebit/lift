@@ -10,16 +10,13 @@ namespace v2\Entity;
 class Elevator
 {
     const DIRECTION_NONE = 'none';
-
     const DIRECTION_UP = 'up';
-
     const DIRECTION_DOWN = 'down';
-
     const DIRECTION_STOP = 'stop';
     const MAX_WEIGHT = 700;
     const MAN_WEIGHT = 70;
 
-    private $maxSpeed;
+    private $maxSpeed = 1;
 
     private $currentSpeed = 0;
 
@@ -29,7 +26,8 @@ class Elevator
 
     private $direction = self::DIRECTION_NONE;
 
-    private $weight;
+    private $weight = 0;
+
     private $passengersQty;
     /**
      * @var bool
@@ -40,6 +38,7 @@ class Elevator
      * @var Route[]
      */
     private $routes = [];
+
     private $levelHigh = 1;
 
     /**
@@ -457,4 +456,79 @@ class Elevator
         $this->levelHigh = $levelHigh;
     }
 
+    /**
+     * @param Command $command
+     * @return int|void
+     */
+    public function calculateDistance($command)
+    {
+        $distance = 0;
+
+        $route = new Route($command);
+        if ($this->routes === []) {
+            $distance = $route->getEndLevel() - $this->getCurrentLevel();
+        } else {
+            $routesCount = count($this->routes);
+            $elevator = clone $this;
+            for ($i = 0; $i < $routesCount; $i++) {
+                switch ($command->getType()) {
+                    case Command::BUTTON_DIRECTION:
+
+                        $delta = $this->routes[$i]->getEndLevel() - $elevator->getCurrentLevel();
+                        if ($delta > 0) {
+                            $elevator->setDirection('up');
+                        } else {
+                            if ($delta < 0) {
+                                $elevator->setDirection('down');
+                            }
+                        }
+
+
+                        if (
+                            $elevator->getDirection() === $command->getValue()
+                            && $this->routes[$i]->getEndLevel() * $delta > $route->getEndLevel() * $delta
+                            && $elevator->getCurrentLevel() * $delta <= $route->getEndLevel() * $delta
+                        ) {
+                            $distance = $distance + abs(($elevator->getCurrentLevel() - $route->getEndLevel()));
+
+                            return $distance;
+                        } else {
+                            if ($elevator->getDirection() !== $command->getValue()
+                                && $route->getEndLevel() === $this->routes[$i]->getEndLevel()
+                            ) {
+                                if (!isset($this->routes[$i + 1])) {
+                                    $distance = $distance + abs(($elevator->getCurrentLevel() - $this->routes[$i]->getEndLevel()));
+                                    return $distance;
+                                }
+                            }
+                        }
+
+                        $distance = $distance + abs(($elevator->getCurrentLevel() - $this->routes[$i]->getEndLevel()));
+
+                        $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
+                        break;
+
+                    case Command::BUTTON_CALL:
+                        $delta = $this->routes[$i]->getEndLevel() - $elevator->getCurrentLevel();
+                        if ($this->routes[$i]->getEndLevel() * $delta > $route->getEndLevel() * $delta
+                            && $elevator->getCurrentLevel() * $delta <= $route->getEndLevel() * $delta
+                        ) {
+                            $distance = $distance + abs(($elevator->getCurrentLevel() - $route->getEndLevel()));
+
+                            return $distance;
+                        } else if ($this->routes[$i]->getEndLevel() === $route->getEndLevel()) {
+                            $distance = $distance + abs(($elevator->getCurrentLevel() - $this->routes[$i]->getEndLevel()));
+                            return $distance;
+                        }
+                        $distance = $distance + abs(($elevator->getCurrentLevel() - $this->routes[$i]->getEndLevel()));
+                        $elevator->setCurrentLevel($this->routes[$i]->getEndLevel());
+
+                        break;
+                }
+            }
+
+        }
+
+        return $distance;
+    }
 }
