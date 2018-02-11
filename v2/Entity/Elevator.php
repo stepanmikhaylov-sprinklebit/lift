@@ -458,9 +458,9 @@ class Elevator
 
     /**
      * @param Command $command
-     * @return int|void
+     * @return int
      */
-    public function calculateDistance($command)
+    public function calculateDistance($command) :int
     {
         $distance = 0;
 

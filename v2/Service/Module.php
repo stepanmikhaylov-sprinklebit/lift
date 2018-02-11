@@ -8,11 +8,9 @@ namespace v2\Service;
  * Time: 17:34
  */
 
-use v2\Entity\Passengers;
 use \v2\Entity\Elevator;
 use \v2\Entity\Building;
 use \v2\Entity\Command;
-use \v2\Entity\Route;
 
 class Module
 {
@@ -27,21 +25,6 @@ class Module
      * @var Building
      */
     private $building;
-
-    /**
-     * @var Command[]
-     */
-    private $commands;
-
-    /**
-     * @var Route[]
-     */
-    private $routes;
-
-    /**
-     * @var Passengers[]
-     */
-    private $passengers;
 
     /**
      * @var Elevator[]
@@ -87,127 +70,34 @@ class Module
     }
 
     /**
-     * @return Command[]
-     */
-    public function getCommands(): ?array
-    {
-        return $this->commands;
-    }
-
-    /**
-     * @param Command[] $commands
-     */
-    public function setCommands($commands): void
-    {
-        $this->commands = $commands;
-    }
-
-    /**
      * @param Command $command
      */
     public function addCommand($command) : void
     {
         if ($command->getType() === Command::BUTTON_DIRECTION) {
             $elevator = $this->getClosestElevator($command);
-
-            if ($this->commands === null) {
-//                $this->commands[] = $command;
-                $elevator->updateRoute($command);
-            } else {
-//                if ($this->isDuplicate($command)) {
-//                    return;
-//                }
-//                $this->commands[] = $command;
-                $elevator->updateRoute($command);
-            }
-        }
-        else if ($command->getType() === Command::BUTTON_CALL) {
+            $elevator->updateRoute($command);
+        } else if ($command->getType() === Command::BUTTON_CALL) {
             $elevator = $this->getClosestElevator($command);
-
-            if ($this->commands === null) {
-//                $this->commands[] = $command;
-                $elevator->updateRoute($command);
-            } else {
-                if ($this->isDuplicate($command)) {
-                    return;
-                }
-//                $this->commands[] = $command;
-                $elevator->updateRoute($command);
-            }
-        }
-        else {
+            $elevator->updateRoute($command);
+        }else {
             $elevator = $command->getElevator();
 
-            if ($this->commands === null && $command->getType() !== Command::BUTTON_STOP) {
-//                $this->commands[] = $command;
+            if ($command->getType() !== Command::BUTTON_STOP) {
                 $elevator->updateRoute($command);
             } else {
                 if ($command->getType() === Command::BUTTON_STOP) {
                     $elevator->stop();
                     return;
                 }
-//                else if ($this->isDuplicate($command)) {
-//                    return;
-//                }
-//                $this->commands[] = $command;
                 $elevator->updateRoute($command);
             }
         }
     }
 
-    public function removeCommands(string $direction, int $level) : void
-    {
-        $commands = $this->getCommands();
-        foreach ($this->commands as $key => $value)
-        {
-            if ($commands[$key]->getType() === 1) {
-                if ($commands[$key]->getValue() === $direction && $commands[$key]->getDestinationLevel() == $level) {
-                    unset($this->commands[$key]);
-                }
-            } else {
-                if ( $commands[$key]->getDestinationLevel() == $level ) {
-                    unset($this->commands[$key]);
-                }
-            }
-        }
-    }
-
     /**
-     * @param Command $command
-     * @return bool
+     * @deprecated
      */
-    public function isDuplicate($command): bool
-    {
-        switch ($command->getType()) {
-            case Command::BUTTON_DIRECTION:
-                foreach ($this->commands as $item) {
-                    if ($item->getValue() === $command->getValue()
-                        && $item->getDestinationLevel() === $command->getDestinationLevel()) {
-                        return true;
-                    }
-                }
-                break;
-            case Command::BUTTON_NUMBER:
-                foreach ($this->commands as $item) {
-                    if ($item->getDestinationLevel() === $command->getDestinationLevel()
-                        && $item->getType() === Command::BUTTON_NUMBER) {
-                        return true;
-                    }
-                }
-                break;
-            case Command::BUTTON_CALL:
-                foreach ($this->commands as $item) {
-                    if ($item->getDestinationLevel() === $command->getDestinationLevel()
-                        && $item->getType() === Command::BUTTON_CALL) {
-                        return true;
-                    }
-                }
-                break;
-
-        }
-        return false;
-    }
-
     public function run($time): void
     {
         $startTime = microtime(true);
@@ -218,6 +108,9 @@ class Module
         }
     }
 
+    /**
+     * @deprecated
+     */
     public function updateCommands(): void
     {
         $file = fopen(Module::FILE_COMMANDS, 'r+');
@@ -248,6 +141,9 @@ class Module
         fclose($file);
     }
 
+    /**
+     * @param Elevator $elevator
+     */
     public function addElevator($elevator)
     {
         $this->elevators[] = $elevator;
