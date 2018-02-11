@@ -16,6 +16,8 @@ class Elevator
     const DIRECTION_DOWN = 'down';
 
     const DIRECTION_STOP = 'stop';
+    const MAX_WEIGHT = 700;
+    const MAN_WEIGHT = 70;
 
     private $maxSpeed;
 
@@ -26,6 +28,19 @@ class Elevator
     private $position = 1.0;
 
     private $direction = self::DIRECTION_NONE;
+
+    private $weight;
+    private $passengersQty;
+    /**
+     * @var bool
+     */
+    private $isOverWeight = false;
+
+    /**
+     * @var Route[]
+     */
+    private $routes = [];
+
 
     public function __construct($maxSpeed)
     {
@@ -111,4 +126,62 @@ class Elevator
     {
         $this->direction = $direction;
     }
+
+    public function getWeight()
+    {
+        return $this->weight;
+    }
+
+    /**
+     * @param mixed $weight
+     */
+    public function setWeight($weight)
+    {
+        $this->weight = $weight;
+    }
+
+    public function setPassengersQty($passengersQty)
+    {
+        $this->passengersQty = $passengersQty;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassengersQty()
+    {
+        return $this->passengersQty;
+    }
+
+
+    public function isOverWeight()
+    {
+        return $this->isOverWeight;
+    }
+
+    /**
+     * @param bool $isOverWeight
+     */
+    public function setIsOverWeight(bool $isOverWeight)
+    {
+        $this->isOverWeight = $isOverWeight;
+    }
+
+    /**
+     * @return Route[]
+     */
+    public function getRoutes(): array
+    {
+        return $this->routes;
+    }
+
+    /**
+     * @param Route[] $routes
+     */
+    public function setRoutes(array $routes)
+    {
+        $this->routes = $routes;
+    }
+
+
 }

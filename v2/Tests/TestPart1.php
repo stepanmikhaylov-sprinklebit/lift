@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use v2\Entity\Building;
 use v2\Entity\Command;
 use v2\Entity\Elevator;
+use v2\Entity\Passengers;
 use v2\Service\Module;
 use v2\Entity\Route;
 
@@ -415,7 +416,7 @@ class TestPart1 extends TestCase
             $this->module->addCommand($command);
         }
 
-        $this->module->startMoving(1);
+        $this->module->startMoving();
 
         $this->assertEquals($expectedSpeed, $this->module->getElevator()->getCurrentSpeed());
         $this->assertEquals($expectedDirection, $this->module->getElevator()->getDirection());
@@ -459,14 +460,14 @@ class TestPart1 extends TestCase
         $this->module->getElevator()->setDirection($direction);
         $this->module->getElevator()->setCurrentSpeed($currentSpeed);
 
-        $this->module->status($startTime, 1);
+        $this->module->status($startTime);
         $this->assertEquals($expectedStartDirection, $this->module->getElevator()->getDirection());
         $this->assertEquals($expectedStartSpeed, $this->module->getElevator()->getCurrentSpeed());
 
         $this->module->addCommand($command);
-        $this->module->startMoving(1);
+        $this->module->startMoving();
 
-        $this->module->status($endTime, 1);
+        $this->module->status($endTime);
         $this->assertEquals($expectedEndDirection, $this->module->getElevator()->getDirection());
         $this->assertEquals($expectedEndSpeed, $this->module->getElevator()->getCurrentSpeed());
     }
@@ -530,7 +531,7 @@ class TestPart1 extends TestCase
         $this->module->getElevator()->setCurrentLevel($level);
         $this->module->getElevator()->setDirection($direction);
 
-        $this->module->endMoving(1);
+        $this->module->endMoving();
 
         if ($this->module->getCommands() !== null) {
             $this->assertEquals($expFirstInArray, in_array($command1, $this->module->getCommands()));
@@ -541,5 +542,112 @@ class TestPart1 extends TestCase
         }
 
         $this->assertEquals(null == $this->module->getRoutes(), $expRoutesExist);
+    }
+
+    public function dataAddPassengers()
+    {
+        return [
+            'add passengers on different level' => [
+                new Passengers(1,1,1),
+                new Passengers(2,2,2),
+                2,
+                1, 1, 1,
+            ],
+            'add passengers on same level' => [
+                new Passengers(1,1,1),
+                new Passengers(1,2,2),
+                1,
+                1, 3, 3,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider dataAddPassengers
+     * @param Passengers $pass1
+     * @param Passengers $pass2
+     * @param int $expectedCount
+     * @param int $expectedFirstObjectLevel
+     * @param int $expectedFirstObjectIn
+     * @param int $expectedFirstObjectOut
+     */
+    public function testAddPassengers($pass1, $pass2, $expectedCount, $expectedFirstObjectLevel,
+        $expectedFirstObjectIn, $expectedFirstObjectOut)
+    {
+        $this->module->addPassangers($pass1);
+        $this->module->addPassangers($pass2);
+
+        $this->assertCount($expectedCount ,$this->module->getPassengers());
+        $this->assertEquals($expectedFirstObjectLevel, $this->module->getPassengers()[0]->getLevel());
+        $this->assertEquals($expectedFirstObjectIn, $this->module->getPassengers()[0]->getIn());
+        $this->assertEquals($expectedFirstObjectOut, $this->module->getPassengers()[0]->getOut());
+    }
+
+    public function dataPassQty()
+    {
+        return [
+            'there are not people on this level, but on other' => [1, 1, new Passengers(2,2,2), 1, false],
+            'there are not people on this level' => [2, 3, new Passengers(2, 0 ,0), 3, false],
+            'there are only people to in' => [1, 3, new Passengers(1, 2 ,0), 5, false],
+            'there are only people to out' => [2, 5, new Passengers(2, 0 ,4), 1, false],
+            'there are people to in and out' => [3, 4, new Passengers(3, 4 ,3), 5, false],
+            'there is overweight situation' => [2, 9, new Passengers(2, 5 ,1), 13, true],
+        ];
+    }
+
+    /**
+     * @dataProvider dataPassQty
+     * @param int $level
+     * @param int $startQty
+     * @param Passengers $pass
+     * @param int $expectedQty
+     * @param bool $isOverWeight
+     */
+    public function testUpdatePassengersQty($level, $startQty, $pass, $expectedQty, $isOverWeight)
+    {
+        $this->module->addPassangers($pass);
+        $this->module->getElevator()->setPassengersQty($startQty);
+        $this->module->updatePassengersQty($level);
+
+        $this->assertEquals($expectedQty, $this->module->getElevator()->getPassengersQty());
+        $this->assertEquals($isOverWeight, $this->module->getElevator()->isOverWeight());
+    }
+
+    public function testOverWeightStatus()
+    {
+
+        $this->module->addCommand(new Command(2, '2', Command::BUTTON_NUMBER));
+        $this->module->addCommand(new Command(4, '4', Command::BUTTON_NUMBER));
+
+        $this->module->startMoving();
+        $this->module->getCurrentRoute()->setStartTime(1);
+        $this->module->addPassangers(new Passengers(2, 5, 1));
+        $this->module->getElevator()->setPassengersQty(10);
+
+        $this->module->status(2);
+        $this->module->updatePassengersQty(2);
+
+        $this->assertEquals(0, $this->module->getElevator()->getCurrentSpeed());
+        $this->assertEquals(2, $this->module->getElevator()->getCurrentLevel());
+
+        $this->module->exitPassengers(2, 4);
+
+        $this->assertEquals(4, $this->module->getPassengers()[0]->getIn());
+        $this->assertEquals(10, $this->module->getElevator()->getPassengersQty());
+
+        $this->module->getCurrentRoute()->setStartTime(1);
+        $this->module->startMoving();
+
+        $this->assertEquals(1, $this->module->getElevator()->getCurrentSpeed());
+    }
+
+    public function testGetClosestElevator()
+    {
+        $command = new Command(3, '3', Command::BUTTON_NUMBER);
+        $this->module->addElevator(new Elevator(1));
+        $this->module->addCommand(new Command(3, '3', Command::BUTTON_NUMBER));
+
+        $this->assertEquals([new Route($command)], $this->module->getElevators()[0]->getRoutes());
+        $this->assertEquals([], $this->module->getElevators()[1]->getRoutes());
     }
 }

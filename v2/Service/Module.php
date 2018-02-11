@@ -8,6 +8,7 @@ namespace v2\Service;
  * Time: 17:34
  */
 
+use v2\Entity\Passengers;
 use \v2\Entity\Elevator;
 use \v2\Entity\Building;
 use \v2\Entity\Command;
@@ -37,6 +38,16 @@ class Module
      */
     private $routes;
 
+    /**
+     * @var Passengers[]
+     */
+    private $passengers;
+
+    /**
+     * @var Elevator[]
+     */
+    private $elevators;
+
     public function __construct(Elevator $elevator, Building $building)
     {
         $this->elevator = $elevator;
@@ -54,7 +65,7 @@ class Module
     /**
      * @param Elevator $elevator
      */
-    public function setElevator(Elevator $elevator)
+    public function setElevator(Elevator $elevator): void
     {
         $this->elevator = $elevator;
     }
@@ -70,7 +81,7 @@ class Module
     /**
      * @param Building $building
      */
-    public function setBuilding(Building $building)
+    public function setBuilding(Building $building): void
     {
         $this->building = $building;
     }
@@ -78,7 +89,7 @@ class Module
     /**
      * @return Command[]
      */
-    public function getCommands()
+    public function getCommands(): ?array
     {
         return $this->commands;
     }
@@ -86,7 +97,7 @@ class Module
     /**
      * @param Command[] $commands
      */
-    public function setCommands($commands)
+    public function setCommands($commands): void
     {
         $this->commands = $commands;
     }
@@ -96,6 +107,8 @@ class Module
      */
     public function addCommand($command) : void
     {
+        $elevator = $this->getClosestElevator($command);
+
         if ($this->commands === null && $command->getType() !== Command::BUTTON_STOP) {
             $this->commands[] = $command;
             $this->updateRoute($command);
@@ -217,9 +230,13 @@ class Module
         return $this->routes[0] ?? null;
     }
 
-    public function startMoving()
+    public function startMoving(): void
     {
         $route = $this->getCurrentRoute();
+
+        if ($this->elevator->isOverWeight()) {
+            return;
+        }
 
         if ($route === null || $this->elevator->getDirection() === 'stop') {
             return;
@@ -290,7 +307,7 @@ class Module
      * @param Command $command
      * @return bool
      */
-    public function isDuplicate($command)
+    public function isDuplicate($command): bool
     {
         switch ($command->getType()) {
             case Command::BUTTON_DIRECTION:
@@ -322,7 +339,7 @@ class Module
         return false;
     }
 
-    public function stop()
+    public function stop(): void
     {
         if ($this->elevator->getDirection() === 'stop') {
             $this->elevator->setDirection('none');
@@ -336,7 +353,7 @@ class Module
         echo 'Lift stopped' . PHP_EOL;
     }
 
-    public function endMoving()
+    public function endMoving(): void
     {
         $this->removeRoute();
         $this->removeCommands($this->elevator->getDirection(), $this->elevator->getCurrentLevel());
@@ -346,23 +363,23 @@ class Module
         $this->openDoors();
     }
 
-    public function removeRoute()
+    public function removeRoute(): void
     {
         array_splice($this->routes, 0, 1);
     }
 
-    public function calculateMovingTime()
+    public function calculateMovingTime(): void
     {
 
     }
 
-    public function openDoors()
+    public function openDoors(): void
     {
         echo "The doors are opening" . PHP_EOL;
         echo "The doors are closing" . PHP_EOL;
     }
 
-    public function run($time)
+    public function run($time): void
     {
         $startTime = microtime(true);
         while (microtime(true) - $startTime < $time) {
@@ -372,7 +389,7 @@ class Module
         }
     }
 
-    public function updateCommands()
+    public function updateCommands(): void
     {
         $file = fopen(Module::FILE_COMMANDS, 'r+');
         flock($file, LOCK_EX);
@@ -393,12 +410,114 @@ class Module
     /**
      * @param Command $command
      */
-    public function addCommandToFile($command)
+    public function addCommandToFile($command): void
     {
         $file = fopen(Module::FILE_COMMANDS, 'a');
         flock($file, LOCK_EX);
         fwrite($file, serialize($command) . PHP_EOL);
         flock($file, LOCK_UN);
         fclose($file);
+    }
+
+    public function isOverWeight(): bool
+    {
+        return $this->elevator->getPassengersQty() * Elevator::MAN_WEIGHT > Elevator::MAX_WEIGHT;
+    }
+
+    /**
+     * @param Passengers $passengers
+     */
+    public function addPassangers($passengers): void
+    {
+        if (empty($this->passengers)) {
+            $this->passengers[] = $passengers;
+        } else {
+            $foundedPass = $this->findPassengersByLevel($passengers->getLevel());
+            if ($foundedPass !== null) {
+                $foundedPass->setIn($foundedPass->getIn() + $passengers->getIn());
+                $foundedPass->setout($foundedPass->getOut() + $passengers->getOut());
+
+                return;
+            }
+
+            $this->passengers[] = $passengers;
+        }
+
+    }
+
+    /**
+     * @param int $level
+     * @return Passengers
+     */
+    public function findPassengersByLevel($level): ?Passengers
+    {
+        foreach ($this->passengers as $item) {
+            if ($item->getLevel() === $level)
+            {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Passengers[]
+     */
+    public function getPassengers(): array
+    {
+        return $this->passengers;
+    }
+
+    /**
+     * @param Passengers $passengers
+     */
+    public function setPassengers(Passengers $passengers): void
+    {
+        $this->passengers = $passengers;
+    }
+
+    public function updatePassengersQty($level)
+    {
+        $passengers = $this->findPassengersByLevel($level);
+
+        if ($passengers !== null) {
+            $this->elevator->setPassengersQty($this->elevator->getPassengersQty() - $passengers->getOut() + $passengers->getIn());
+            $passengers->setIn(0);
+            $passengers->setOut(0);
+        }
+
+        if ($this->elevator->getPassengersQty() * Elevator::MAN_WEIGHT > Elevator::MAX_WEIGHT) {
+            $this->elevator->setIsOverWeight(true);
+        }
+    }
+
+    public function exitPassengers($level, $passengersQty)
+    {
+        $this->elevator->setPassengersQty($this->elevator->getPassengersQty() - $passengersQty);
+
+        $passengers = $this->findPassengersByLevel($level);
+        $passengers->setIn($passengers->getIn() + $passengersQty);
+
+
+        $this->elevator->setIsOverWeight($this->elevator->getPassengersQty() * Elevator::MAN_WEIGHT > Elevator::MAX_WEIGHT);
+    }
+
+    public function addElevator($elevator)
+    {
+        $this->elevators[] = $elevator;
+    }
+
+    /**
+     * @return Elevator[]
+     */
+    public function getElevators()
+    {
+        return $this->elevators;
+    }
+
+    private function getClosestElevator($command)
+    {
+        return $this->elevators[0];
     }
 }
