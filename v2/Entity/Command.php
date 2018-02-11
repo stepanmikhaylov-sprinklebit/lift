@@ -31,6 +31,11 @@ class Command
 
     private $type;
 
+    /**
+     * @var Elevator
+     */
+    private $elevator;
+
     public function __construct(int $destinationLevel, string $value, int $type)
     {
         $this->createdAtDate = microtime(true);
@@ -133,5 +138,18 @@ class Command
     public function setType(int $type)
     {
         $this->type = $type;
+    }
+
+    public function getElevator()
+    {
+        return $this->elevator;
+    }
+
+    /**
+     * @param Elevator $elevator
+     */
+    public function setElevator(Elevator $elevator)
+    {
+        $this->elevator = $elevator;
     }
 }

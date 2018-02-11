@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="89261e2b-151a-4908-b3ba-43e26f21c9ca" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/console.php" afterPath="$PROJECT_DIR$/console.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controls.php" afterPath="$PROJECT_DIR$/controls.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v2/Entity/Elevator.php" afterPath="$PROJECT_DIR$/v2/Entity/Elevator.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v2/Service/Module.php" afterPath="$PROJECT_DIR$/v2/Service/Module.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/v2/Tests/TestPart1.php" afterPath="$PROJECT_DIR$/v2/Tests/TestPart1.php" />
-    </list>
+    <list default="true" id="89261e2b-151a-4908-b3ba-43e26f21c9ca" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,7 +15,7 @@
       <file leaf-file-name="TestPart1.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/v2/Tests/TestPart1.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="334">
+            <state relative-caret-position="888">
               <caret line="647" column="28" lean-forward="false" selection-start-line="647" selection-start-column="28" selection-end-line="647" selection-end-column="28" />
               <folding>
                 <element signature="e#108#139#0#PHP" expanded="true" />
@@ -56,8 +49,8 @@
       <file leaf-file-name="Module.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/v2/Service/Module.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2334">
-              <caret line="518" column="48" lean-forward="false" selection-start-line="518" selection-start-column="48" selection-end-line="518" selection-end-column="48" />
+            <state relative-caret-position="788">
+              <caret line="183" column="35" lean-forward="true" selection-start-line="183" selection-start-column="35" selection-end-line="183" selection-end-column="35" />
               <folding>
                 <element signature="e#111#136#0#PHP" expanded="true" />
               </folding>
@@ -480,11 +473,11 @@
     <history-entry file="TestPart1 - 2018.02.11 at 11h 39m 58s.xml">
       <configuration name="TestPart1" configurationId="PHPUnitRunConfigurationType" />
     </history-entry>
+    <history-entry file="TestPart1 - 2018.02.11 at 11h 47m 46s.xml">
+      <configuration name="TestPart1" configurationId="PHPUnitRunConfigurationType" />
+    </history-entry>
     <history-entry file="TestPart1_testGetClosestElevator - 2018.02.11 at 11h 37m 27s.xml">
       <configuration name="TestPart1.testGetClosestElevator" configurationId="PHPUnitRunConfigurationType" />
-    </history-entry>
-    <history-entry file="TestPart1_testOverWeightStatus - 2018.02.11 at 10h 58m 32s.xml">
-      <configuration name="TestPart1.testOverWeightStatus" configurationId="PHPUnitRunConfigurationType" />
     </history-entry>
     <history-entry file="TestPart1_testOverWeightStatus - 2018.02.11 at 10h 59m 43s.xml">
       <configuration name="TestPart1.testOverWeightStatus" configurationId="PHPUnitRunConfigurationType" />
@@ -516,16 +509,15 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1985" y="-4" width="1855" height="1084" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30735213" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.49806523" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39892474" sideWeight="0.50193477" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32903227" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39892474" sideWeight="0.49806523" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -762,16 +754,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/v2/Entity/Passengers.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="428">
-          <caret line="76" column="5" lean-forward="false" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
-          <folding>
-            <element signature="e#6#86#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/v2/Entity/Elevator.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
@@ -782,7 +764,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/v2/Tests/TestPart1.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
+        <state relative-caret-position="888">
           <caret line="647" column="28" lean-forward="false" selection-start-line="647" selection-start-column="28" selection-end-line="647" selection-end-column="28" />
           <folding>
             <element signature="e#108#139#0#PHP" expanded="true" />
@@ -790,10 +772,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/v2/Entity/Passengers.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="428">
+          <caret line="76" column="5" lean-forward="false" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
+          <folding>
+            <element signature="e#6#86#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/v2/Service/Module.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2334">
-          <caret line="518" column="48" lean-forward="false" selection-start-line="518" selection-start-column="48" selection-end-line="518" selection-end-column="48" />
+        <state relative-caret-position="788">
+          <caret line="183" column="35" lean-forward="true" selection-start-line="183" selection-start-column="35" selection-end-line="183" selection-end-column="35" />
           <folding>
             <element signature="e#111#136#0#PHP" expanded="true" />
           </folding>

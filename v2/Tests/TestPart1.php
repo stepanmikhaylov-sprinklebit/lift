@@ -30,6 +30,7 @@ class TestPart1 extends TestCase
         $elevator = new Elevator(1, 700);
         $building = new Building(4, 1);
         $this->module = new Module($elevator, $building);
+        $this->module->addElevator($elevator);
     }
 
     public function dataAddCommand()
@@ -49,6 +50,8 @@ class TestPart1 extends TestCase
      */
     public function testAddCommand($command, $expected)
     {
+        $command->setElevator($this->module->getElevators()[0]);
+
         $this->module->addCommand($command);
         if ($this->module->getCommands() !== null) {
             $this->assertEquals($expected, in_array($command, $this->module->getCommands()));
@@ -136,6 +139,9 @@ class TestPart1 extends TestCase
      */
     public function testAddDuplicateCommand($command1, $command2, $expectedCount)
     {
+        $command1->setElevator($this->module->getElevators()[0]);
+        $command2->setElevator($this->module->getElevators()[0]);
+
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
 
@@ -351,21 +357,23 @@ class TestPart1 extends TestCase
      */
     public function testUpdateRoute($commands, $expectedRoutesIndexes)
     {
+
         foreach ($commands as $command) {
+            $command->setElevator($this->module->getElevators()[0]);
             $this->module->addCommand($command);
         }
 
-        $this->assertCount(count($expectedRoutesIndexes), $this->module->getRoutes());
+        $this->assertCount(count($expectedRoutesIndexes), $this->module->getElevators()[0]->getRoutes());
 
         if (count($expectedRoutesIndexes) > 1) {
             $this->assertEquals([new Route($commands[$expectedRoutesIndexes[0]]), new Route($commands[$expectedRoutesIndexes[1]])],
-                $this->module->getRoutes());
+                $this->module->getElevators()[0]->getRoutes());
         } else {
             $this->assertEquals([new Route($commands[$expectedRoutesIndexes[0]])],
-                $this->module->getRoutes());
+                $this->module->getElevators()[0]->getRoutes());
         }
 
-        $this->assertEquals(new Route($commands[$expectedRoutesIndexes[0]]), $this->module->getCurrentRoute());
+        $this->assertEquals(new Route($commands[$expectedRoutesIndexes[0]]), $this->module->getElevators()[0]->getCurrentRoute());
     }
 
     public function dataStop()
@@ -383,8 +391,8 @@ class TestPart1 extends TestCase
      */
     public function testStop($directionBefore, $directionExpected)
     {
-        $this->module->getElevator()->setDirection($directionBefore);
-        $this->module->stop();
+        $this->module->getElevators()[0]->setDirection($directionBefore);
+        $this->module->getElevators()[0]->stop();
 
         $this->assertEquals($directionExpected, $this->module->getElevator()->getDirection());
     }
@@ -410,16 +418,17 @@ class TestPart1 extends TestCase
      */
     public function testStartMove($direction, $command, $currentLevel, $expectedSpeed, $expectedDirection)
     {
-        $this->module->getElevator()->setDirection($direction);
-        $this->module->getElevator()->setCurrentLevel($currentLevel);
+        $this->module->getElevators()[0]->setDirection($direction);
+        $this->module->getElevators()[0]->setCurrentLevel($currentLevel);
         if ($command ==! null){
+            $command->setElevator($this->module->getElevators()[0]);
             $this->module->addCommand($command);
         }
 
-        $this->module->startMoving();
+        $this->module->getElevators()[0]->startMoving();
 
-        $this->assertEquals($expectedSpeed, $this->module->getElevator()->getCurrentSpeed());
-        $this->assertEquals($expectedDirection, $this->module->getElevator()->getDirection());
+        $this->assertEquals($expectedSpeed, $this->module->getElevators()[0]->getCurrentSpeed());
+        $this->assertEquals($expectedDirection, $this->module->getElevators()[0]->getDirection());
     }
 
     public function dataStatus()
@@ -453,21 +462,23 @@ class TestPart1 extends TestCase
         $expectedStartDirection, $expectedStartSpeed, $expectedEndDirection, $expectedEndSpeed)
     {
         if ($firstCommand !== null) {
+            $firstCommand->setElevator($this->module->getElevators()[0]);
             $this->module->addCommand($firstCommand);
-            $this->module->getCurrentRoute()->setStartTime($startTime);
+            $this->module->getElevators()[0]->getCurrentRoute()->setStartTime($startTime);
         }
         $this->module->getElevator()->setPosition($currentPosition);
         $this->module->getElevator()->setDirection($direction);
         $this->module->getElevator()->setCurrentSpeed($currentSpeed);
 
-        $this->module->status($startTime);
+        $this->module->getElevators()[0]->status($startTime);
         $this->assertEquals($expectedStartDirection, $this->module->getElevator()->getDirection());
         $this->assertEquals($expectedStartSpeed, $this->module->getElevator()->getCurrentSpeed());
 
+        $command->setElevator($this->module->getElevators()[0]);
         $this->module->addCommand($command);
-        $this->module->startMoving();
+        $this->module->getElevators()[0]->startMoving();
 
-        $this->module->status($endTime);
+        $this->module->getElevators()[0]->status($endTime);
         $this->assertEquals($expectedEndDirection, $this->module->getElevator()->getDirection());
         $this->assertEquals($expectedEndSpeed, $this->module->getElevator()->getCurrentSpeed());
     }
@@ -526,22 +537,18 @@ class TestPart1 extends TestCase
      */
     public function testEndMoving($command1, $command2, $direction, $level, $expFirstInArray, $expSecondInArray, $expRoutesExist, $expDirection, $expSpeed)
     {
+        $command1->setElevator($this->module->getElevators()[0]);
+        $command2->setElevator($this->module->getElevators()[0]);
         $this->module->addCommand($command1);
         $this->module->addCommand($command2);
-        $this->module->getElevator()->setCurrentLevel($level);
-        $this->module->getElevator()->setDirection($direction);
+        $this->module->getElevators()[0]->setCurrentLevel($level);
+        $this->module->getElevators()[0]->setDirection($direction);
 
-        $this->module->endMoving();
+        $this->module->getElevators()[0]->endMoving();
 
-        if ($this->module->getCommands() !== null) {
-            $this->assertEquals($expFirstInArray, in_array($command1, $this->module->getCommands()));
-            $this->assertEquals($expSecondInArray, in_array($command2, $this->module->getCommands()));
-        } else {
-            $this->assertFalse($expFirstInArray);
-            $this->assertFalse($expSecondInArray);
-        }
-
-        $this->assertEquals(null == $this->module->getRoutes(), $expRoutesExist);
+        $this->assertEquals(null == $this->module->getElevators()[0]->getRoutes(), $expRoutesExist);
+        $this->assertEquals($expDirection, $this->module->getElevators()[0]->getDirection());
+        $this->assertEquals($expSpeed, $this->module->getElevators()[0]->getCurrentSpeed());
     }
 
     public function dataAddPassengers()
@@ -574,13 +581,13 @@ class TestPart1 extends TestCase
     public function testAddPassengers($pass1, $pass2, $expectedCount, $expectedFirstObjectLevel,
         $expectedFirstObjectIn, $expectedFirstObjectOut)
     {
-        $this->module->addPassangers($pass1);
-        $this->module->addPassangers($pass2);
+        $this->module->getElevators()[0]->addPassangers($pass1);
+        $this->module->getElevators()[0]->addPassangers($pass2);
 
-        $this->assertCount($expectedCount ,$this->module->getPassengers());
-        $this->assertEquals($expectedFirstObjectLevel, $this->module->getPassengers()[0]->getLevel());
-        $this->assertEquals($expectedFirstObjectIn, $this->module->getPassengers()[0]->getIn());
-        $this->assertEquals($expectedFirstObjectOut, $this->module->getPassengers()[0]->getOut());
+        $this->assertCount($expectedCount ,$this->module->getElevators()[0]->getPassengers());
+        $this->assertEquals($expectedFirstObjectLevel, $this->module->getElevators()[0]->getPassengers()[0]->getLevel());
+        $this->assertEquals($expectedFirstObjectIn, $this->module->getElevators()[0]->getPassengers()[0]->getIn());
+        $this->assertEquals($expectedFirstObjectOut, $this->module->getElevators()[0]->getPassengers()[0]->getOut());
     }
 
     public function dataPassQty()
@@ -605,9 +612,9 @@ class TestPart1 extends TestCase
      */
     public function testUpdatePassengersQty($level, $startQty, $pass, $expectedQty, $isOverWeight)
     {
-        $this->module->addPassangers($pass);
+        $this->module->getElevators()[0]->addPassangers($pass);
         $this->module->getElevator()->setPassengersQty($startQty);
-        $this->module->updatePassengersQty($level);
+        $this->module->getElevators()[0]->updatePassengersQty($level);
 
         $this->assertEquals($expectedQty, $this->module->getElevator()->getPassengersQty());
         $this->assertEquals($isOverWeight, $this->module->getElevator()->isOverWeight());
@@ -615,37 +622,42 @@ class TestPart1 extends TestCase
 
     public function testOverWeightStatus()
     {
+        $command1 = new Command(2, '2', Command::BUTTON_NUMBER);
+        $command2 = new Command(4, '4', Command::BUTTON_NUMBER);
+        $command1->setElevator($this->module->getElevators()[0]);
+        $command2->setElevator($this->module->getElevators()[0]);
 
-        $this->module->addCommand(new Command(2, '2', Command::BUTTON_NUMBER));
-        $this->module->addCommand(new Command(4, '4', Command::BUTTON_NUMBER));
+        $this->module->addCommand($command1);
+        $this->module->addCommand($command2);
 
-        $this->module->startMoving();
-        $this->module->getCurrentRoute()->setStartTime(1);
-        $this->module->addPassangers(new Passengers(2, 5, 1));
-        $this->module->getElevator()->setPassengersQty(10);
+        $this->module->getElevators()[0]->startMoving();
+        $this->module->getElevators()[0]->getCurrentRoute()->setStartTime(1);
+        $this->module->getElevators()[0]->addPassangers(new Passengers(2, 5, 1));
+        $this->module->getElevators()[0]->setPassengersQty(10);
 
-        $this->module->status(2);
-        $this->module->updatePassengersQty(2);
+        $this->module->getElevators()[0]->status(2);
+        $this->module->getElevators()[0]->updatePassengersQty(2);
 
-        $this->assertEquals(0, $this->module->getElevator()->getCurrentSpeed());
-        $this->assertEquals(2, $this->module->getElevator()->getCurrentLevel());
+        $this->assertEquals(0, $this->module->getElevators()[0]->getCurrentSpeed());
+        $this->assertEquals(2, $this->module->getElevators()[0]->getCurrentLevel());
 
-        $this->module->exitPassengers(2, 4);
+        $this->module->getElevators()[0]->exitPassengers(2, 4);
 
-        $this->assertEquals(4, $this->module->getPassengers()[0]->getIn());
-        $this->assertEquals(10, $this->module->getElevator()->getPassengersQty());
+        $this->assertEquals(4, $this->module->getElevators()[0]->getPassengers()[0]->getIn());
+        $this->assertEquals(10, $this->module->getElevators()[0]->getPassengersQty());
 
-        $this->module->getCurrentRoute()->setStartTime(1);
-        $this->module->startMoving();
+        $this->module->getElevators()[0]->getCurrentRoute()->setStartTime(1);
+        $this->module->getElevators()[0]->startMoving();
 
-        $this->assertEquals(1, $this->module->getElevator()->getCurrentSpeed());
+        $this->assertEquals(1, $this->module->getElevators()[0]->getCurrentSpeed());
     }
 
     public function testGetClosestElevator()
     {
         $command = new Command(3, '3', Command::BUTTON_NUMBER);
+        $command->setElevator($this->module->getElevators()[0]);
         $this->module->addElevator(new Elevator(1));
-        $this->module->addCommand(new Command(3, '3', Command::BUTTON_NUMBER));
+        $this->module->addCommand($command);
 
         $this->assertEquals([new Route($command)], $this->module->getElevators()[0]->getRoutes());
         $this->assertEquals([], $this->module->getElevators()[1]->getRoutes());
